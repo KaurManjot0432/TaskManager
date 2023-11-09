@@ -18,7 +18,7 @@ class App {
 
     this.initializeDb()
     this.initializeRoutes()
-    // this.initializeMiddlewares()
+    this.initializeMiddlewares()
   }
 
   private initializeRoutes(): void {
@@ -32,20 +32,15 @@ class App {
       .catch((error) => console.log(error));
   }
 
-  // private initializeMiddlewares (): void {
-  //   this.app.use((err: Error | CustomError, req: Request, res: Response, next: any) => {
-  //     console.error(err)
+  private initializeMiddlewares (): void {
+    this.app.use((err: Error, req: Request, res: Response, next: any) => {
+      console.error(err)
 
-  //     if (err instanceof CustomError) {
-  //       res.status(err.code).send({ reason: err.message })
-  //       return
-  //     }
-
-  //     res.status(500).send({
-  //       reason: err.message ?? 'Erro interno no servidor'
-  //     })
-  //   })
-  // }
+      res.status(500).send({
+        reason: err.message ?? 'Internal Server Error'
+      })
+    })
+  }
 
   public listen(): void {
     this.app.listen(this.port, () => {

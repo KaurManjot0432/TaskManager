@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { UserControler } from '../controllers/user.controller';
+import { validateUser, validateSignin } from '../middlewares/validations';
 
 export class UserRouter {
   readonly router: Router = Router()
@@ -12,7 +13,10 @@ export class UserRouter {
   public initializeRoutes (): Router {
     this.router
       .route('/')
-      .post(this.userController.createUser)
+      .post(validateUser, this.userController.createUser)
+    this.router
+      .route('/signin')
+      .post(validateSignin, this.userController.signin);
 
     return this.router
   }
