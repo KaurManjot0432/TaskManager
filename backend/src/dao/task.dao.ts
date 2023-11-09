@@ -1,6 +1,6 @@
 import { Task } from '../entities/Task';
 import { AppDataSource } from '../database/dataSource';
-import { Repository } from 'typeorm'
+import { Repository, DeleteResult } from 'typeorm'
 
 export class TaskDAO {
     readonly taskRepository: Repository<Task>
@@ -9,15 +9,19 @@ export class TaskDAO {
         this.taskRepository = AppDataSource.getRepository(Task)
     }
 
-    public createtask(task: Task): Promise<Task> {
+    public createTask(task: Task): Promise<Task> {
         return this.taskRepository.save(task);
     }
 
-    public findTaskByUserId(userId: number): Promise<Task[] | undefined> {
+    public findTaskByUserId(userId: string): Promise<Task[] | undefined> {
         return this.taskRepository.findBy({ userId });
     }
 
-    public findTaskbyId(id: number): Promise<Task[] | undefined> {
+    public findTaskbyId(id: string): Promise<Task[] | undefined> {
         return this.taskRepository.findBy({ id });
+    }
+
+    public deleteTask(id: string): Promise<DeleteResult> {
+        return this.taskRepository.delete(id);
     }
 }

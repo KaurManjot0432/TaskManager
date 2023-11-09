@@ -1,5 +1,5 @@
 import { TaskService } from '../services/task.service';
-import { type NextFunction, type Request, type Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 const { validationResult } = require('express-validator');
 
 export class TaskControler {
@@ -19,6 +19,16 @@ export class TaskControler {
             //create Task
             const response = await this.taskService.createTask(req.body);
             res.status(201).send({ success: true, response });
+        } catch (err) {
+            res.status(500).json({ success: false, error: err });
+        }
+    };
+
+    public deleteTask = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { id } = req.params;
+            const deleteResult = await this.taskService.deleteTaskById(id);
+            res.status(201).send({ success: true, deleteResult });
         } catch (err) {
             res.status(500).json({ success: false, error: err });
         }

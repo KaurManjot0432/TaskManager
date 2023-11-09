@@ -14,7 +14,10 @@ export class TaskRouter {
     public initializeRoutes(): Router {
         this.router
             .route('/create')
-            .post(validateTask, verifyToken, this.taskController.createTask)
+            .post(validateTask, verifyToken, this.taskController.createTask);
+        this.router
+            .route('/deleteTask/:id')
+            .delete(verifyToken, this.taskController.deleteTask);
 
         return this.router
     }

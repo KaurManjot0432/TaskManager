@@ -18,7 +18,7 @@ export class UserService {
     return await this.userDAO.findUserByEmail(email);
   }
 
-  public async findUserById(id: number): Promise<User[] | undefined> {
+  public async findUserById(id: string): Promise<User[] | undefined> {
     return await this.userDAO.findUserById(id);
   }
 }

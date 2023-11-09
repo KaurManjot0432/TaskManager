@@ -3,8 +3,8 @@ import { User } from './User';
 
 @Entity({ name: 'task' })
 export class Task {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn("increment")
+    id: string;
 
     @Column()
     title: string;
@@ -20,5 +20,5 @@ export class Task {
 
     @ManyToOne(() => User) // Many tasks can belong to one user
     @JoinColumn({ name: 'user_id' }) // Foreign key column in the 'post' table
-    userId: number;
+    userId: string;
 }

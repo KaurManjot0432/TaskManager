@@ -1,5 +1,6 @@
 import { TaskDAO } from '../dao/task.dao';
 import { Task } from "../entities/Task";
+import { DeleteResult } from 'typeorm';
 
 export class TaskService {
     readonly taskDAO: TaskDAO
@@ -9,14 +10,18 @@ export class TaskService {
     }
 
     public async createTask(task: Task): Promise<Task> {
-        return await this.taskDAO.createtask(task);
+        return await this.taskDAO.createTask(task);
     }
 
-    public async findTaskByUserId(userId: number): Promise<Task[] | undefined> {
+    public async findTaskByUserId(userId: string): Promise<Task[] | undefined> {
         return await this.taskDAO.findTaskByUserId(userId);
     }
 
-    public async findTaskById(id: number): Promise<Task[] | undefined> {
+    public async findTaskById(id: string): Promise<Task[] | undefined> {
         return await this.taskDAO.findTaskbyId(id);
+    }
+
+    public async deleteTaskById(id: string): Promise<DeleteResult> {
+        return await this.taskDAO.deleteTask(id);
     }
 }

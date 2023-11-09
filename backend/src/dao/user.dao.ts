@@ -17,7 +17,7 @@ export class UserDAO {
     return this.userRepository.findBy({ email });
   }
 
-  public findUserById(id: number): Promise<User[] | undefined> {
+  public findUserById(id: string): Promise<User[] | undefined> {
     return this.userRepository.findBy({ id });
   }
 }
