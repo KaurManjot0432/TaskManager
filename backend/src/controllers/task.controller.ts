@@ -34,4 +34,13 @@ export class TaskControler {
         }
     };
 
+    public getFeedTask = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const response = await this.taskService.findTaskByUserId(req.body.userId);
+            res.status(201).send({ success: true, response });
+        } catch (err) {
+            res.status(500).json({ success: false, error: err });
+        }
+    }
+
 }

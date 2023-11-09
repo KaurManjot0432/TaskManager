@@ -13,8 +13,11 @@ export class TaskDAO {
         return this.taskRepository.save(task);
     }
 
-    public findTaskByUserId(userId: string): Promise<Task[] | undefined> {
-        return this.taskRepository.findBy({ userId });
+    public async findTaskByUserId(userId: string): Promise<Task[] | undefined> {
+        return this.taskRepository
+            .createQueryBuilder('task')
+            .where('task.userId = :userId', { userId })
+            .getMany();
     }
 
     public findTaskbyId(id: string): Promise<Task[] | undefined> {
