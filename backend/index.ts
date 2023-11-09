@@ -2,6 +2,7 @@ import express, { type Application, type Request, type Response } from 'express'
 import * as dotenv from 'dotenv';
 import { AppDataSource } from './src/database/dataSource';
 import { UserRouter } from './src/routes/user.router';
+import { TaskRouter } from './src/routes/task.router';
 
 dotenv.config();
 
@@ -22,7 +23,8 @@ class App {
   }
 
   private initializeRoutes(): void {
-    this.app.use('/user', new UserRouter().initializeRoutes())
+    this.app.use('/user', new UserRouter().initializeRoutes());
+    this.app.use('/task', new TaskRouter().initializeRoutes())
   }
 
   private initializeDb(): void {
@@ -32,7 +34,7 @@ class App {
       .catch((error) => console.log(error));
   }
 
-  private initializeMiddlewares (): void {
+  private initializeMiddlewares(): void {
     this.app.use((err: Error, req: Request, res: Response, next: any) => {
       console.error(err)
 

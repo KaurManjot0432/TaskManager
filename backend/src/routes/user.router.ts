@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { UserControler } from '../controllers/user.controller';
-import { validateUser, validateSignin } from '../middlewares/validations';
+import { validateUser, validateSignin } from '../middlewares/validation.middleware';
 
 export class UserRouter {
   readonly router: Router = Router()
   readonly userController: UserControler
 
-  constructor () {
+  constructor() {
     this.userController = new UserControler()
   }
 
-  public initializeRoutes (): Router {
+  public initializeRoutes(): Router {
     this.router
       .route('/')
       .post(validateUser, this.userController.createUser)

@@ -9,5 +9,10 @@ export const validateUser = [
 
 export const validateSignin = [
     body('email', 'Enter a valid email').isEmail(),
-    body('password','Password can not be blank!').isLength({ min : 1 })
+    body('password', 'Password can not be blank!').isLength({ min: 1 })
 ];
+
+export const validateTask = [
+    body('title', 'Title could not be empty').isLength({ min: 1 }),
+    body('description', 'Enter some description').isLength({ min: 1 })
+]

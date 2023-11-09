@@ -26,7 +26,7 @@ export class UserControler {
       if (err.name === 'QueryFailedError' && err.message.includes("Duplicate entry")) {
         res.status(400).json({ success: false, error: 'Email already exists.' });
       } else {
-        next(err);
+        res.status(500).json({ success: false, error: err });
       }
     }
   };
@@ -72,7 +72,7 @@ export class UserControler {
       const authToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1800s' });
       res.status(201).send({ success: true, authToken });
     } catch (err) {
-      next(err);
+      res.status(500).json({ success: false, error: err });
     }
   }
 
