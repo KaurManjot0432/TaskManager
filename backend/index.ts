@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import { AppDataSource } from './src/database/dataSource';
 import { UserRouter } from './src/routes/user.router';
 import { TaskRouter } from './src/routes/task.router';
+let cors = require("cors");
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ class App {
 
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
+    this.app.use(cors());
 
     this.initializeDb()
     this.initializeRoutes()
