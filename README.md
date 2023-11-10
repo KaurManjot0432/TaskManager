@@ -76,6 +76,4 @@ Run the application on http://localhost:3000/
 
 
 
-We welcome your feedback and contributions to make QUAD even more powerful and versatile.
-
 **Happy task management with Task Manager!**
