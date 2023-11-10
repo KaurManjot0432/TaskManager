@@ -1,26 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import {BrowserRouter,Navigate,Routes,Route} from "react-router-dom"
+import { useSelector } from "react-redux";
+import Login from './scenes/Login/Login'
+import Home from './scenes/Home/Home'
+
 
 function App() {
+  const isAuth=Boolean(useSelector((state:any)=>state?.token))  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+        <BrowserRouter>
+        <Routes>
+         <Route path="/" element={<Login/>}/>
+         <Route path="/home" element={isAuth?<Home/>:<Navigate to={'/'}/>} />
+        </Routes>
+      </BrowserRouter>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
