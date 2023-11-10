@@ -19,6 +19,7 @@ function CreateArea() {
                 id: string,
                 title: string,
                 description: string,
+                category: string
             }>
     }
 
@@ -32,7 +33,8 @@ function CreateArea() {
     const [text, setText] = useState({
         title: "",
         description: "",
-        completed: false
+        completed: false,
+        category: "Pending", // Set default category to "Pending"
     });
 
     function expanded() {
@@ -54,7 +56,8 @@ function CreateArea() {
                 setText({
                     title: '',
                     description: '',
-                    completed: false
+                    completed: false,
+                    category: ''
                 });
                 setPostupdated(prevState => !prevState);
             } else {
@@ -89,53 +92,114 @@ function CreateArea() {
     }, [postUpdated]);
 
     return (
-        <div data-testid='createarea' className="createAreaContainer">
-            <form className="createAreaForm" onSubmit={handlePostClick}>
-                <input
-                    className="createAreaInput"
-                    onClick={expanded}
-                    onChange={event => {
-                        const { name, value } = event.target;
-                        setText(() => { return { ...text, [name]: value } })
-                    }}
-                    name="title"
-                    placeholder="To do title"
-                    value={text.title}
-                />
-                {isExpand && (
-                    <div className="expandedFields">
-                        <input
-                            onChange={handleTextChange}
-                            name="description"
-                            placeholder="Add a short description..."
-                            value={text.description}
-                            className="descriptionInput"
-                        />
+        <>
+            <div data-testid='createarea' className="createAreaContainer">
+                <form className="createAreaForm" onSubmit={handlePostClick}>
+                    <input
+                        className="createAreaInput"
+                        onClick={expanded}
+                        onChange={event => {
+                            const { name, value } = event.target;
+                            setText(() => { return { ...text, [name]: value } })
+                        }}
+                        name="title"
+                        placeholder="To do title"
+                        value={text.title}
+                    />
+                    {isExpand && (
+                        <div className="expandedFields">
+                            <input
+                                onChange={handleTextChange}
+                                name="description"
+                                placeholder="Add a short description..."
+                                value={text.description}
+                            />
+                            <Select
+                                className="createAreaInput"
+                                value={text.category}
+                                placeholder="Status"
+                                onChange={event => {
+                                    const { value } = event.target;
+                                    setText((prevText) => ({ ...prevText, category: value }));
+                                }}
+                                name="category"
+                            >
+                                <MenuItem value="Pending">Pending</MenuItem>
+                                <MenuItem value="InProgress">InProgress</MenuItem>
+                                <MenuItem value="Completed">Completed</MenuItem>
+                            </Select>
+                        </div>
+                    )}
+                    <IconButton type="submit" className="submitButton">
+                        <AddIcon className="AddIcon" />
+                    </IconButton>
+                </form>
+            </div>
+            <div className="taskItemContainer">
+                {Array.isArray(feedTasks) ? (
+                    <div data-testid='createarea' className="createAreaContainer">
+                        <div className="createAreaForm">
+                            <div className="parent-div">
+                                <h3>Pending</h3>
+                            </div>
+
+                            {feedTasks.filter((post) => post.category === 'Pending').map((post: any) => (
+                                <Card key={post.id} className="taskCard">
+                                    <CardContent>
+                                        <TaskItem
+                                            completed={post.completed}
+                                            postId={post.id}
+                                            title={post.title}
+                                            content={post.description}
+                                            category={post.category}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                        <div className="createAreaForm">
+                            <div className="parent-div">
+                                <h3>In Progress</h3>
+                            </div>
+                            {feedTasks.filter((post) => post.category === 'InProgress').map((post: any) => (
+                                <Card key={post.id} className="taskCard">
+                                    <CardContent>
+                                        <TaskItem
+                                            completed={post.completed}
+                                            postId={post.id}
+                                            title={post.title}
+                                            content={post.description}
+                                            category={post.category}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                        <div className="createAreaForm">
+                            <div className="parent-div">
+                                <h3>Completed</h3>
+                            </div>
+                            {feedTasks.filter((post) => post.category === 'Completed').map((post: any) => (
+                                <Card key={post.id} className="taskCard">
+                                    <CardContent>
+                                        <TaskItem
+                                            completed={post.completed}
+                                            postId={post.id}
+                                            title={post.title}
+                                            content={post.description}
+                                            category={post.category}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                     </div>
+                ) : (
+                    <div></div>
                 )}
-                <IconButton type="submit" className="submitButton">
-                    <AddIcon className="AddIcon" />
-                </IconButton>
-            </form>
-            {Array.isArray(feedTasks) ? (
-                <div className="taskItemList">
-                    {feedTasks.map((post: any) => (
-                        <Card key={post.id} className="taskCard">
-                            <CardContent>
-                                <TaskItem
-                                    completed={post.completed}
-                                    postId={post.id}
-                                    title={post.title}
-                                    content={post.description}
-                                />
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            ) : (
-                <div></div>
-            )}
-        </div>
+
+            </div>
+        </>
     );
 }
 

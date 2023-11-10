@@ -9,12 +9,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setTasks, setTask, setDelete } from "../../state";
 import CheckIcon from '@mui/icons-material/Check';
 import config from '../../config';
+import { MenuItem, Select } from "@mui/material";
 
 interface TaskItemProperty {
     completed: boolean,
     postId: string,
     title: string,
-    content: string
+    content: string,
+    category: string
 }
 interface State {
     _id: string
@@ -22,7 +24,7 @@ interface State {
 interface Token {
     token: string
 }
-function TaskItem({ completed, postId, title, content }: TaskItemProperty) {
+function TaskItem({ completed, postId, title, content, category }: TaskItemProperty) {
     const token = useSelector((state: Token) => state.token)
     const dispatch = useDispatch();
     const [isEditMode, setIsEditMode] = useState(false);
@@ -30,14 +32,15 @@ function TaskItem({ completed, postId, title, content }: TaskItemProperty) {
     const [isChecked, setChecked] = useState(true);
     const [heading, setTitle] = useState(title);
     const [descreption, setContent] = useState(content);
+    const [status, setStatus] = useState(category);
+
     const taskItemStyles: React.CSSProperties = {
         border: '1px solid #ccc',
         padding: '10px',
         marginBottom: '10px',
         borderRadius: '4px',
         backgroundColor: '#f9f9f9',
-        width: '518px',
-        marginLeft: '378px',
+        width: '300px',
         position: 'relative',
     };
     const taskcheckedItemStyles: React.CSSProperties = {
@@ -136,7 +139,7 @@ function TaskItem({ completed, postId, title, content }: TaskItemProperty) {
     const handleSaveIconClick = async () => {
         try {
             setIsEditMode(false);
-            setChecked(!isChecked)
+            setChecked(!isChecked);
 
             const response = await fetch(`${config.apiUrl}/task/editTask/${postId}`, {
                 method: 'PATCH',
@@ -144,16 +147,17 @@ function TaskItem({ completed, postId, title, content }: TaskItemProperty) {
                     "auth-token": token,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ title: heading, description: descreption })
+                body: JSON.stringify({ title: heading, description: descreption, category: status })
             });
-            console.log(response);
-            if (!response.ok) {
-                throw new Error('Request failed');
+            const result = await response.json();
+            if (result.success) {
+                const updatedTasks = await fetch(`${config.apiUrl}/task`, {
+                    method: "GET",
+                    headers: { 'auth-token': token }
+                });
+                const data = await updatedTasks.json()
+                dispatch(setTasks({ tasks: data.response }))
             }
-
-            const editedPost = await response.json();
-            console.log(editedPost);
-            dispatch(setTask({ task: editedPost }));
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -201,6 +205,24 @@ function TaskItem({ completed, postId, title, content }: TaskItemProperty) {
                 />
             ) : (
                 <Typography style={{ fontStyle: 'italic' }}>{content}</Typography>
+            )}
+
+            {isEditMode ? (
+                <div>
+                    <Select
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value as string)}
+                        name="status"
+                    >
+                        <MenuItem value="Pending">Pending</MenuItem>
+                        <MenuItem value="InProgress">InProgress</MenuItem>
+                        <MenuItem value="Completed">Completed</MenuItem>
+                    </Select>
+                </div>
+            ) : (
+                <Typography variant="h6" style={titleStyles}>
+                    {status}
+                </Typography>
             )}
         </div>
     );
