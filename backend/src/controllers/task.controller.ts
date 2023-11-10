@@ -43,4 +43,13 @@ export class TaskControler {
         }
     }
 
+    public editTask = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { id } = req.params;
+            const response = await this.taskService.editTaskById(id, req.body);
+            res.status(201).send({ success: true, response });
+        } catch (err) {
+            res.status(500).json({ success: false, error: err });
+        }
+    }
 }

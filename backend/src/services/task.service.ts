@@ -1,6 +1,6 @@
 import { TaskDAO } from '../dao/task.dao';
 import { Task } from "../entities/Task";
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 export class TaskService {
     readonly taskDAO: TaskDAO
@@ -23,5 +23,9 @@ export class TaskService {
 
     public async deleteTaskById(id: string): Promise<DeleteResult> {
         return await this.taskDAO.deleteTask(id);
+    }
+
+    public async editTaskById(id: string, updatedTask: Task): Promise<UpdateResult> {
+        return await this.taskDAO.editTask(id, updatedTask);
     }
 }

@@ -1,6 +1,6 @@
 import { Task } from '../entities/Task';
 import { AppDataSource } from '../database/dataSource';
-import { Repository, DeleteResult } from 'typeorm'
+import { Repository, DeleteResult, UpdateResult} from 'typeorm'
 
 export class TaskDAO {
     readonly taskRepository: Repository<Task>
@@ -26,5 +26,9 @@ export class TaskDAO {
 
     public deleteTask(id: string): Promise<DeleteResult> {
         return this.taskRepository.delete(id);
+    }
+
+    public async editTask(id: string, updatedTask: Task): Promise<UpdateResult> {
+        return this.taskRepository.update(id, updatedTask);
     }
 }

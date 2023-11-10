@@ -20,7 +20,8 @@ export class TaskRouter {
             .route('/deleteTask/:id')
             .delete(verifyToken, this.taskController.deleteTask);
         this.router
-            .route('/')
+            .route('/editTask/:id')
+            .patch(verifyToken, this.taskController.editTask);
 
         return this.router
     }
