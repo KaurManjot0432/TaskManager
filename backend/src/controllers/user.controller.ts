@@ -18,9 +18,9 @@ export class UserControler {
       if (!errors.isEmpty()) {
         res.status(400).json({ success: false, errors: errors.array() });
       }
-      const response = await this.userService.createUser(req.body);
-      const authToken = jwt.sign(response, process.env.JWT_SECRET, { expiresIn: '1800s' });
-      res.status(201).send({ success: true, authToken });
+      const user = await this.userService.createUser(req.body);
+      const authToken = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1800s' });
+      res.status(201).send({ success: true, authToken, user });
     } catch (err) {
       // Check if the error is a QueryFailedError related to a duplicate email
       if (err.name === 'QueryFailedError' && err.message.includes("Duplicate entry")) {
@@ -43,8 +43,8 @@ export class UserControler {
       }
 
       //find user by email
-      const user = await this.userService.findUserByEmail(req.body.email);
-      if (user.length == 0) {
+      const savedUser = await this.userService.findUserByEmail(req.body.email);
+      if (savedUser.length == 0) {
         res.status(400).send({
           success: false,
           error: "Enter valid credentials!"
@@ -52,7 +52,7 @@ export class UserControler {
       }
 
       //compare password
-      const currUser = user[0];
+      const currUser = savedUser[0];
       const checkPassword = await bcrypt.compare(req.body.password, currUser.password);
 
       if (!checkPassword) {
@@ -62,15 +62,15 @@ export class UserControler {
         });
       }
       // return jwt as response
-      const payload = {
+      const user = {
         firstName: currUser.firstName,
         lastName: currUser.lastName,
         email: currUser.email,
         password: currUser.password,
         id: currUser.id
       }
-      const authToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1800s' });
-      res.status(201).send({ success: true, authToken });
+      const authToken = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1800s' });
+      res.status(201).send({ success: true, authToken, user });
     } catch (err) {
       res.status(500).json({ success: false, error: err });
     }
