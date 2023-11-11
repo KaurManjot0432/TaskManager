@@ -14,9 +14,8 @@ import {
   from 'mdb-react-ui-kit';
 
 function Login() {
-  const [invalidPassword, setInvalidPassword] = useState<string | null>('');
+  const [errormsg, setErrormsg] = useState<string | null>('');
   const [showError, setShowError] = useState(false);
-  const [showMsg, setMsg] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,22 +34,15 @@ function Login() {
     setShowError(true);
     setTimeout(() => {
       setShowError(false);
-      setInvalidPassword(null)
+      setErrormsg(null)
     }, 2000);
   };
 
-  const displayMsgTimer = () => {
-    setMsg(true);
-    setTimeout(() => {
-      setMsg(false);
-    }, 2000);
-  };
   useEffect(() => {
-
-    if (invalidPassword) {
+    if(errormsg) {
       displayErrorFor5Seconds();
     }
-  }, [invalidPassword]);
+  }, [errormsg]);
 
   const handleLogin = async (values: any, onSubmitProps: any) => {
 
@@ -62,9 +54,7 @@ function Login() {
       body: JSON.stringify(values),
     });
     const loggedInUser = await loginUserData.json();
-
     if (loggedInUser.success) {
-      setInvalidPassword(null)
       dispatch(setLogin(
         {
           user: loggedInUser.user,
@@ -73,7 +63,8 @@ function Login() {
       ))
       navigate('/home')
     } else {
-      setInvalidPassword(loggedInUser.err)
+      console.log(loggedInUser.error);
+      setErrormsg(loggedInUser.error)
     }
     onSubmitProps.resetForm()
   }
@@ -120,8 +111,7 @@ function Login() {
                 helperText={touched.password && errors.password} id='password' type='text'
                 sx={{ width: '100%', padding: "7px" }} />
               <MDBBtn type="submit" className="mb-4 w-100">Sign in</MDBBtn>
-              {showError && <p style={{ color: '#8B0000', border: '8px' }}>{invalidPassword}</p>}
-
+              {showError && <p style={{ color: '#8B0000', border: '8px' }}>{errormsg}</p>}
             </form>
           )}
         </Formik>

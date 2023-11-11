@@ -15,6 +15,7 @@ import {
 
 function Signup() {
     const [registeredmsg, setRegisteredmsg] = useState<string | null>(null);
+    const [errormsg, setErrormsg] = useState<string | null>('');
     const [showError, setShowError] = useState(false);
     const [showMsg, setMsg] = useState(false);
 
@@ -39,6 +40,7 @@ function Signup() {
         setShowError(true);
         setTimeout(() => {
             setShowError(false);
+            setErrormsg(null);
         }, 2000);
     };
 
@@ -54,7 +56,10 @@ function Signup() {
         if (registeredmsg) {
             displayMsgTimer()
         }
-    }, [registeredmsg]);
+        if (errormsg) {
+            displayErrorFor5Seconds();
+        }
+    }, [registeredmsg, errormsg]);
 
     const handleRegisterClick = (values: any, onSubmitProps: any) => {
         handleRegister(values, onSubmitProps)
@@ -70,6 +75,7 @@ function Signup() {
         const savedUser = await savedUserResponse.json();
         console.log(savedUser);
         if (savedUser.success) {
+            setRegisteredmsg("successfully Registered!");
             dispatch(setLogin(
                 {
                     user: savedUser.user,
@@ -78,7 +84,8 @@ function Signup() {
             ))
             navigate('/home')
         } else {
-            setRegisteredmsg(savedUser.error);
+            console.log(savedUser.error);
+            setErrormsg(savedUser.error);
         }
         onSubmitProps.resetForm();
     }
@@ -143,11 +150,12 @@ function Signup() {
 
                             <MDBBtn type='submit' className="mb-4 w-100">Sign up</MDBBtn>
                         </Box>
+                        {showError && <p style={{ color: '#8B0000', border: '8px' }}>{errormsg}</p>}
+                        {showMsg && <p style={{ color: '#8B0000', border: '8px' }}>{registeredmsg}</p>}
                     </form>
                 )
                 }
                 </Formik>
-
             </MDBTabsContent>
         </MDBContainer>
     );

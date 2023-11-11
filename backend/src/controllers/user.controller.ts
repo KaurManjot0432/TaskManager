@@ -19,7 +19,7 @@ export class UserControler {
         console.log(errors.array());
         return res.status(400).json({
           success: false,
-          errors: "Internnal Server Error"
+          error: "Invalid Email"
         });
       }
 
@@ -45,7 +45,7 @@ export class UserControler {
         console.log(errors.array());
         res.status(400).json({
           success: false,
-          errors: "Internnal Server Error"
+          error: "Invalid Email"
         });
         return;
       }
