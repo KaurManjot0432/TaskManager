@@ -15,6 +15,7 @@ export class TaskControler {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 res.status(400).json({ success: false, errors: errors.array() });
+                return;
             }
             //create Task
             const response = await this.taskService.createTask(req.body);
